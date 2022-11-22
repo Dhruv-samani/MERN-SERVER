@@ -184,7 +184,9 @@ export const getAllTags = async (req, res) => {
     console.log('getAllTags() - error', error);
     res.status(404).json({ message: 'Something went wrong' });
   }
-};
+}
+
+
 
 export const loadMoreTours = async (req, res) => {
   try {
