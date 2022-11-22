@@ -5,8 +5,8 @@ import morgan from "morgan";
 import userRouter from "./routes/user.js";
 import tourRouter from "./routes/tour.js";
 import fileUpload from 'express-fileupload';
-// import profileRouter from './routes/profile.js';
-// import uploadRouter from './routes/upload.js';
+import profileRouter from './routes/profile.js';
+import uploadRouter from './routes/upload.js';
 import dotenv from "dotenv";
 
 const app = express();
@@ -21,8 +21,8 @@ app.use(express.static('public'));
 
 app.use("/users", userRouter); //http://localhost:5000/users/signup
 app.use("/tour", tourRouter);
-// app.use('/profiles', profileRouter);
-// app.use('/uploads', uploadRouter);
+app.use('/profiles', profileRouter);
+app.use('/uploads', uploadRouter);
 
 app.get("/", (req, res) => {
   res.send("Welcome to tour API")

@@ -2,13 +2,16 @@ import express from "express";
 const router = express.Router();
 import auth from "../middleware/auth.js";
 
-import { createTour, deleteTour, getRelatedTours, getTour, getTours, getToursBySearch, getToursByTag, getToursByUser, likeTour, updateTour, } from "../controllers/tour.js";
+import { createTour, deleteTour, getRelatedTours, getTour, getTours, getToursBySearch, getToursByTag, getToursByUser, likeTour, updateTour, getAllTags, loadMoreTours } from "../controllers/tour.js";
 
 router.get("/", getTours);
 router.get("/search", getToursBySearch);
 router.get("/tag/:tag", getToursByTag);
 router.post("/relatedTours", getRelatedTours);
 router.get("/:id", getTour);
+router.get('/tags', getAllTags);
+router.get('/load-more', loadMoreTours);
+
 
 router.post("/", auth, createTour);
 router.delete("/:id", auth, deleteTour);

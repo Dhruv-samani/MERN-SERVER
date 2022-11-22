@@ -1,5 +1,5 @@
-import TourModal from "../models/tour.js";
 import mongoose from "mongoose";
+import TourModal from "../models/tour.js";
 
 
 
@@ -15,6 +15,7 @@ export const createTour = async (req, res) => {
     await newTour.save();
     res.status(201).json(newTour);
   } catch (error) {
+    console.log('createTour() - error', error);
     res.status(404).json({ message: "Something went wrong" });
   }
 };
@@ -169,5 +170,37 @@ export const likeTour = async (req, res) => {
     res.status(200).json(updatedTour);
   } catch (error) {
     res.status(404).json({ message: error.message });
+  }
+};
+
+
+
+export const getAllTags = async (req, res) => {
+  try {
+    const totalTags = await TourModal.find().distinct("tags");
+    console.log('...', totalTags);
+    res.status(200).json(totalTags);
+  } catch (error) {
+    console.log('getAllTags() - error', error);
+    res.status(404).json({ message: 'Something went wrong' });
+  }
+};
+
+export const loadMoreTours = async (req, res) => {
+  try {
+    const { page = 1, skip, searchQuery, limit = 6 } = req.query;
+    const title = new RegExp(searchQuery, 'i');
+    const searchFilter = !!searchQuery ? { title } : {};
+
+    const totalTours = await TourModal.countDocuments(searchFilter);
+    const tours = await TourModal.find(searchFilter)
+      .populate('creator')
+      .limit(Number(limit))
+      .skip(Number(skip));
+
+    res.status(200).json({ skip, tours, totalTours });
+  } catch (error) {
+    console.log('loadMoreTours() - error', error);
+    res.status(404).json({ message: 'Something went wrong' });
   }
 };
