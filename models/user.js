@@ -11,17 +11,14 @@ const userSchema = mongoose.Schema({
   clientId: { type: String, required: false },
   occupation: {
     type: String,
-    required: true,
     unique: true,
   },
   mobile: {
     type: String,
-    required: true,
     unique: true,
   },
   address: {
     type: String,
-    required: true,
     unique: true,
   },
   imageFile: String,

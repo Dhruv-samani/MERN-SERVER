@@ -1,5 +1,5 @@
-import bcrypt from "bcryptjs"
-import jwt from "jsonwebtoken"
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 import UserModal from "../models/user.js";
 
@@ -18,7 +18,9 @@ export const signin = async (req, res) => {
     if (!isPasswordCorrect)
       return res.status(400).json({ message: "Invalid credentials" });
 
-    const token = jwt.sign({ email: oldUser.email, id: oldUser._id }, secret, { expiresIn: "1h" });
+    const token = jwt.sign({ email: oldUser.email, id: oldUser._id }, secret, {
+      expiresIn: "8760h",
+    });
 
     res.status(200).json({ result: oldUser, token });
   } catch (error) {
@@ -28,11 +30,12 @@ export const signin = async (req, res) => {
 };
 
 export const signup = async (req, res) => {
+  console.log("body", req.body);
   const { email, password, firstName, lastName } = req.body;
   try {
     const oldUser = await UserModal.findOne({ email });
     if (oldUser) {
-      return res.status(400).json({ message: "User already exists" })
+      return res.status(400).json({ message: "User already exists" });
     }
 
     const hashadPassword = await bcrypt.hash(password, 12);
@@ -40,16 +43,18 @@ export const signup = async (req, res) => {
     const result = await UserModal.create({
       email,
       password: hashadPassword,
-      name: `${firstName} ${lastName}`
+      name: `${firstName} ${lastName}`,
     });
 
-    const token = jwt.sign({ email: result.email, id: result._id }, secret, { expiresIn: "1h" });
+    const token = jwt.sign({ email: result.email, id: result._id }, secret, {
+      expiresIn: "8760h",
+    });
     res.status(201).json({ result, token });
   } catch (error) {
-    res.status(500).json({ message: "Something went wrong" })
+    console.log("Error", error);
+    res.status(500).json({ message: "Something went wrong" });
   }
 };
-
 
 export const googleSignIn = async (req, res) => {
   const { email, name, token, googleId } = req.body;

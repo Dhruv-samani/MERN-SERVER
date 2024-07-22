@@ -1,8 +1,6 @@
 import mongoose from "mongoose";
 import TourModal from "../models/tour.js";
 
-
-
 export const createTour = async (req, res) => {
   const tour = req.body;
   const newTour = new TourModal({
@@ -15,13 +13,10 @@ export const createTour = async (req, res) => {
     await newTour.save();
     res.status(201).json(newTour);
   } catch (error) {
-    console.log('createTour() - error', error);
+    console.log("createTour() - error", error);
     res.status(404).json({ message: "Something went wrong" });
   }
 };
-
-
-
 
 export const getTours = async (req, res) => {
   const { page } = req.query;
@@ -39,13 +34,11 @@ export const getTours = async (req, res) => {
       totalTours: total,
       numberOfPages: Math.ceil(total / limit),
     });
-    console.log('...', Number(page))
+    console.log("...", Number(page));
   } catch (error) {
     res.status(404).json({ message: "Something went wrong" });
   }
 };
-
-
 
 export const getToursBySearch = async (req, res) => {
   const { searchQuery } = req.query;
@@ -58,8 +51,6 @@ export const getToursBySearch = async (req, res) => {
   }
 };
 
-
-
 export const getTour = async (req, res) => {
   const { id } = req.params;
   try {
@@ -70,8 +61,6 @@ export const getTour = async (req, res) => {
   }
 };
 
-
-
 export const getToursByUser = async (req, res) => {
   const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -80,8 +69,6 @@ export const getToursByUser = async (req, res) => {
   const userTours = await TourModal.find({ creator: id });
   res.status(200).json(userTours);
 };
-
-
 
 export const deleteTour = async (req, res) => {
   const { id } = req.params;
@@ -95,8 +82,6 @@ export const deleteTour = async (req, res) => {
     res.status(404).json({ message: "Something went wrong" });
   }
 };
-
-
 
 export const updateTour = async (req, res) => {
   const { id } = req.params;
@@ -121,9 +106,6 @@ export const updateTour = async (req, res) => {
   }
 };
 
-
-
-
 export const getToursByTag = async (req, res) => {
   const { tag } = req.params;
   try {
@@ -134,8 +116,6 @@ export const getToursByTag = async (req, res) => {
   }
 };
 
-
-
 export const getRelatedTours = async (req, res) => {
   const tags = req.body;
   try {
@@ -145,8 +125,6 @@ export const getRelatedTours = async (req, res) => {
     res.status(404).json({ message: "Something went wrong" });
   }
 };
-
-
 
 export const likeTour = async (req, res) => {
   const { id } = req.params;
@@ -173,36 +151,32 @@ export const likeTour = async (req, res) => {
   }
 };
 
-
-
 export const getAllTags = async (req, res) => {
   try {
     const totalTags = await TourModal.find().distinct("tags");
-    console.log('...', totalTags);
+    console.log("...", totalTags);
     res.status(200).json(totalTags);
   } catch (error) {
-    console.log('getAllTags() - error', error);
-    res.status(404).json({ message: 'Something went wrong' });
+    console.log("getAllTags() - error", error);
+    res.status(404).json({ message: "Something went wrong" });
   }
-}
-
-
+};
 
 export const loadMoreTours = async (req, res) => {
   try {
     const { page = 1, skip, searchQuery, limit = 6 } = req.query;
-    const title = new RegExp(searchQuery, 'i');
+    const title = new RegExp(searchQuery, "i");
     const searchFilter = !!searchQuery ? { title } : {};
 
     const totalTours = await TourModal.countDocuments(searchFilter);
     const tours = await TourModal.find(searchFilter)
-      .populate('creator')
+      .populate("creator")
       .limit(Number(limit))
       .skip(Number(skip));
 
     res.status(200).json({ skip, tours, totalTours });
   } catch (error) {
-    console.log('loadMoreTours() - error', error);
-    res.status(404).json({ message: 'Something went wrong' });
+    console.log("loadMoreTours() - error", error);
+    res.status(404).json({ message: "Something went wrong" });
   }
 };
